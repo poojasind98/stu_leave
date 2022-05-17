@@ -1,0 +1,158 @@
+{% extends 'mysite/_partials/base.html' %}
+
+{% block content %}
+{% include 'mysite/_partials/messages.html' %}
+    
+    
+    {% if category == 'S' %}
+        {% block leavebutton %}
+        <a href="{% url 'leave_apply' %}" class="ui primary button">Apply for Leave</a>
+    
+        {% endblock leavebutton %}
+
+        <h1 class="ui header">Leave List</h1>
+        <table class="ui table">
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Leave Type</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leaves_user %}
+            <tr>
+                <td>{{ leave.start_date }}</td>
+                <td>{{ leave.end_date }}</td>
+                <td>{{ leave.leave_type }}</td>
+                <td>{{ leave.reason }}</td>
+                {% if leave.status == False %}
+                <td>Pending</td>
+                {% else %}
+                <td>Reviewed</td>
+                {% endif %}
+                <td>{{ leave.action_taken }}</td>
+            </tr>
+            
+            {% endfor %}
+
+        </tbody>
+        </table>
+    
+
+
+
+
+
+    {% else %}
+    <h1 class="ui header">Leave List</h1>
+    <table class="ui table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Leave Type</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Accept/Reject</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leaves %}
+            {% if leave.status == False %}
+            <tr>
+                <td>{{ leave.referring_user.username }}</td>
+                <td>{{ leave.start_date }}</td>
+                <td>{{ leave.end_date }}</td>
+                <td>{{ leave.leave_type }}</td>
+                <td>{{ leave.reason }}</td>
+                {% if leave.status == False %}
+                <td>Pending</td>
+                {% else %}
+                <td>Reviewed</td>
+                {% endif %}
+                <td>
+                    {% if leave.status == True %}
+                        {{ leave.action_taken }}
+                    
+                    {% else %}
+
+                    
+                    <form method="POST" action="{% url 'leave_decision' leave.id %}">
+                    {% csrf_token %}
+                    <div class="ui buttons">
+                        <button class="ui button active red" name="reject">Reject</button>
+                        <div class="or"></div>
+                        <button class="ui positive button" name="accept">Accept</button>
+                      </div>
+        
+                    
+                    <!-- <a href="" class="ui button" name="accept">
+                        <i class="check icon green"></i>
+                    </a>
+                    <a href="" class="ui button" name="reject" >
+                        <i class="close icon red"></i>
+                    </a> -->
+                    </form>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{%url 'leave_detail' leave.id %}" class="ui button">
+                        <i class="eye icon "></i>
+                    </a>
+                </td>
+
+            </tr>
+            {% else %}
+            <tr>
+                <td>{{ leave.referring_user.username }}</td>
+                <td>{{ leave.start_date }}</td>
+                <td>{{ leave.end_date }}</td>
+                <td>{{ leave.leave_type }}</td>
+                <td>{{ leave.reason }}</td>
+                
+                <td>Reviewed</td>
+                <td>{{ leave.action_taken }} </td>
+                <td>
+                    <a href="{%url 'leave_detail' leave.id %}" class="ui button">
+                        <i class="eye icon "></i>
+                    </a>
+                </td>
+
+            </tr>
+
+
+            {% endif %}
+            
+            {% endfor %}
+            
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>
+                    <a href="?filter=pending">Pending </a>
+                </th>
+                <th>
+                    <a href="?filter=All">All   </a>
+                </th>
+                <th>
+                    <a href="?filter=Accepted">Accepted </a>
+                </th>
+                <th>
+                    <a href="?filter=Rejected">Rejected </a>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    
+
+    {% endif %}
+
+    
+    
+{% endblock content %} 

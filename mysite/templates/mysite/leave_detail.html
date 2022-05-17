@@ -1,0 +1,66 @@
+{% extends 'mysite/_partials/base.html' %}
+
+{% block content %}
+{% include 'mysite/_partials/messages.html' %}
+<div class="ui grid">
+    <div class="four wide column"></div>
+    <div class="eight wide column">
+      <div class="ui middle aligned center aligned grid">
+        <div class="column mt-5">
+          <h2 class="ui teal image header">
+            <div class="content"> Leave Details</div></h2><br>
+            <div class="ui stacked segment">
+            {% for l in leave %}
+            
+            <h4 class="ui left aligned header">Name</h4>
+            <div class="ui segment">
+                {{ l.id }}
+                {{ l.referring_user.username }}
+            </div>
+
+            <h4 class="ui left aligned header">Leave Type</h4>
+            <div class="ui segment">
+                {{ l.leave_type }}
+            </div>
+
+            <h4 class="ui left aligned header">Start Date</h4>
+            <div class="ui segment">
+                {{ l.start_date }}
+            </div>
+
+            <h4 class="ui left aligned header">End Date</h4>
+            <div class="ui segment">
+                {{ l.end_date }}
+            </div>
+
+            <h4 class="ui left aligned header">Reason</h4>
+            <div class="ui segment">
+                {{ l.reason }}
+            </div>
+
+            <h4 class="ui left aligned header">Number of Days</h4>
+            <div class="ui segment">
+                {{ l.days_count }}
+            </div>
+
+
+            <form method="POST" action="{% url 'leave_decision' l.id %}">
+                {% csrf_token %}
+            <div class="ui buttons">
+                <button class="ui button active red" name="reject">Reject</button>
+                <div class="or"></div>
+                <button class="ui positive button" name="accept">Accept</button>
+              </div>
+
+            </form>
+        
+{% endfor %}
+        </div>
+
+    </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
